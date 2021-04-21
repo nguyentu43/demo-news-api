@@ -1,5 +1,7 @@
 package com.maruro.newspaper.ui
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +15,7 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.maruro.newspaper.R
 import com.maruro.newspaper.enums.QueryEnums
+import com.maruro.newspaper.models.Article
 import com.maruro.newspaper.recycleView.ArticleAdapter
 import com.maruro.newspaper.utils.PreferencesWrapper
 import com.maruro.newspaper.viewModels.NewspaperViewModel
@@ -30,7 +33,11 @@ class TopHeadlinesFragment : DaggerFragment() {
         requireView().findViewById(R.id.categoryGroup)
     }
     private val recycleView: RecyclerView by lazy { requireView().findViewById(R.id.searchRecycleView) }
-    private val adapter: ArticleAdapter by lazy{ ArticleAdapter() }
+    private val adapter: ArticleAdapter by lazy{ ArticleAdapter(object: ArticleAdapter.ArticleClickListener{
+        override fun onArticleClick(article: Article) {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(article.url)))
+        }
+    }) }
 
     @Inject
     lateinit var preferencesWrapper: PreferencesWrapper
@@ -41,10 +48,6 @@ class TopHeadlinesFragment : DaggerFragment() {
     private var category: QueryEnums.Category? = null
     private var totalResult = -1
     private var isLoading = false
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {

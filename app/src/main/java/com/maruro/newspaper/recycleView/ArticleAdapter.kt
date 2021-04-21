@@ -11,14 +11,14 @@ import com.bumptech.glide.Glide
 import com.maruro.newspaper.R
 import com.maruro.newspaper.models.Article
 
-class ArticleAdapter(): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ArticleAdapter(val articleClickListener: ArticleClickListener): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val articles = mutableListOf<Article?>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         if (viewType == ARTICLE_ITEM) {
             val view = LayoutInflater.from(parent.context).inflate(R.layout.article_item, parent, false)
-            return ArticleViewHolder(view)
+            return ArticleViewHolder(view, articleClickListener)
         }
 
         val view = LayoutInflater.from(parent.context).inflate(R.layout.loading_item, parent, false)
@@ -68,7 +68,7 @@ class ArticleAdapter(): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         const val LOADING_ITEM = 0
     }
 
-    class ArticleViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
+    class ArticleViewHolder(itemView: View, val articleClickListener: ArticleClickListener): RecyclerView.ViewHolder(itemView){
         private val sourceTextView: TextView by lazy{
             itemView.findViewById(R.id.sourceTextView)
         }
@@ -102,6 +102,10 @@ class ArticleAdapter(): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             titleTextView.text = article.title
             descriptionTextView.text = article.description
             authorTextView.text = article.author
+
+            openButton.setOnClickListener {
+                articleClickListener.onArticleClick(article)
+            }
         }
     }
 

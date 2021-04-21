@@ -44,12 +44,13 @@ open class QueryEnums {
     }
 
     enum class Error {
-        E400, E401, E429, E500;
+        E400, E401, E426, E429, E500;
 
         override fun toString(): String =
             when (name) {
                 "E400" -> "Bad Request"
                 "E401" -> "Unauthorized"
+                "E426" -> "Error"
                 "E429" -> "Too Many Requests"
                 "E500" -> "Server Error"
                 else -> ""
