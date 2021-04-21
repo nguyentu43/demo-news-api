@@ -5,18 +5,17 @@ import androidx.lifecycle.MutableLiveData
 import com.maruro.newspaper.api.ApiService
 import com.maruro.newspaper.enums.QueryEnums
 import com.maruro.newspaper.models.ArticlesResponse
-import com.maruro.newspaper.models.SourcesResponse
 
 class NewspaperRepository(val apiService: ApiService) {
     private val articlesResponseLiveData = MutableLiveData<ArticlesResponse>()
-    private val sourcesResponseLiveData = MutableLiveData<SourcesResponse>()
+    private val searchArticlesResponseLiveData = MutableLiveData<ArticlesResponse>()
     private val errorLiveData = MutableLiveData<String>()
 
     val articlesResponse: LiveData<ArticlesResponse>
     get() = articlesResponseLiveData
 
-    val sourcesResponse: LiveData<SourcesResponse>
-    get() = sourcesResponseLiveData
+    val searchArticlesResponse: LiveData<ArticlesResponse>
+        get() = searchArticlesResponseLiveData
 
     val error: LiveData<String>
     get() = errorLiveData
@@ -31,7 +30,7 @@ class NewspaperRepository(val apiService: ApiService) {
     ){
         try {
             val articlesResponse = apiService.getArticles(keyword, keywordInTitle, sortBy, pageSize, page, sources)
-            articlesResponseLiveData.postValue(articlesResponse)
+            searchArticlesResponseLiveData.postValue(articlesResponse)
         }
         catch (e: Exception){
             errorLiveData.postValue(e.message?.replace("HTTP ", ""))
@@ -48,19 +47,6 @@ class NewspaperRepository(val apiService: ApiService) {
         try {
             val articlesResponse = apiService.getTopHeadlinesArticles(keyword, pageSize, page, category, country)
             articlesResponseLiveData.postValue(articlesResponse)
-        }
-        catch (e: Exception){
-            errorLiveData.postValue(e.message?.replace("HTTP ", ""))
-        }
-    }
-
-    suspend fun getSources(
-        category: QueryEnums.Category? = null,
-        country: QueryEnums.Country? = null
-    ){
-        try{
-            val sourcesResponse = apiService.getSources(category, country)
-            sourcesResponseLiveData.postValue(sourcesResponse)
         }
         catch (e: Exception){
             errorLiveData.postValue(e.message?.replace("HTTP ", ""))

@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.maruro.newspaper.enums.QueryEnums
 import com.maruro.newspaper.models.ArticlesResponse
-import com.maruro.newspaper.models.SourcesResponse
 import com.maruro.newspaper.repositories.NewspaperRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -13,21 +12,14 @@ import kotlinx.coroutines.launch
 
 class NewspaperViewModel(private val newspaperRepository: NewspaperRepository): ViewModel() {
 
-    val sourcesResponse: LiveData<SourcesResponse>
-    get() = newspaperRepository.sourcesResponse
-
     val error: LiveData<String>
     get() = newspaperRepository.error
 
     val articlesResponse: LiveData<ArticlesResponse>
     get() = newspaperRepository.articlesResponse
 
-    fun getSources(category: QueryEnums.Category? = null, country: QueryEnums.Country? = null){
-        viewModelScope.launch(Dispatchers.IO) {
-            delay(2000)
-            newspaperRepository.getSources(category, country)
-        }
-    }
+    val searchArticlesResponse: LiveData<ArticlesResponse>
+        get() = newspaperRepository.searchArticlesResponse
 
     fun getArticles(
         keyword: String,
